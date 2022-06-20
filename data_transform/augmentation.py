@@ -8,15 +8,6 @@ from tqdm import tqdm
 
 import utility as ut
 
-image_path = r"..\dataset\training\images\\"
-train_img_path = ut.utils.get_img_list(image_path, 'tif')
-
-annotation_path = r"..\dataset\training\\1st_manual\\"
-annotated_img_path = ut.utils.get_img_list(annotation_path, "gif")
-
-ut.utils.make_dir(r"..\dataset\augmented\training\images\\")
-ut.utils.make_dir(r"..\dataset\augmented\training\annotated\\")
-
 def augment_img(images, annotations, save_path, augment=True):
     """
     """
@@ -80,6 +71,15 @@ if __name__ == "__main__":
 
     # Set Seed
     np.random.seed(77)
+
+    image_path = r"..\dataset\training\images\\"
+    train_img_path = ut.utils.get_img_list(image_path, 'tif')
+
+    annotation_path = r"..\dataset\training\\1st_manual\\"
+    annotated_img_path = ut.utils.get_img_list(annotation_path, "gif")
+
+    ut.utils.make_dir(r"..\dataset\augmented\training\images\\")
+    ut.utils.make_dir(r"..\dataset\augmented\training\annotated\\")
 
     augment_img(train_img_path, annotated_img_path, 
             r"..\dataset\augmented\training\\", augment=True)    
