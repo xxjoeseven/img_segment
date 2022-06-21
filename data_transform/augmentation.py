@@ -1,7 +1,9 @@
 import cv2
+import elasticdeform
 import imageio
 import numpy as np
 import os
+import random
 
 from albumentations import HorizontalFlip, VerticalFlip, Rotate
 from tqdm import tqdm
@@ -13,7 +15,7 @@ def augment_img(images, annotations, save_path, augment=True):
     """
     IMAGE_SIZE = (512,512)
 
-    for index, (x, y) in tqdm(enumerate(zip(images, annotations)), 
+    for _, (x, y) in tqdm(enumerate(zip(images, annotations)), 
             total=len(images)):
 
             image_name = os.path.basename(x).split('.')[0]
@@ -22,6 +24,9 @@ def augment_img(images, annotations, save_path, augment=True):
             # Read image and annotation
             x = cv2.imread(x, cv2.IMREAD_COLOR)
             y = imageio.mimread(y)[0]
+
+            # print(x.shape, y.shape)
+            # break
 
             if augment == True:
 
@@ -40,8 +45,20 @@ def augment_img(images, annotations, save_path, augment=True):
                 x3 = augmented["image"]
                 y3 = augmented["annotation"]
 
-                X = [x, x1, x2, x3]
-                Y = [y, y1, y2, y3]
+                # From Ronneberger Paper
+                # smooth deformation using random displacement vectors on a
+                # coarse 3 by 3 grid, 10 pixels standard deviation and bicubic
+                # interpolation.
+
+                xy4 = \
+                elasticdeform.deform_random_grid([x ,y], 
+                                                sigma=10, 
+                                                points=3, 
+                                                order=3,
+                                                axis=[(0,1),(0,1)]) 
+
+                X = [x, x1, x2, x3, xy4[0]]
+                Y = [y, y1, y2, y3, xy4[1]]
 
             else:
                 X =[x]
@@ -70,6 +87,7 @@ def augment_img(images, annotations, save_path, augment=True):
 if __name__ == "__main__":
 
     # Set Seed
+    random.seed(77)
     np.random.seed(77)
 
     image_path = r"..\dataset\training\images\\"
