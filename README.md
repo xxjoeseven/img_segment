@@ -21,3 +21,8 @@ In the paper,
 It is described that for microscopical images the primary augmentation are shift and rotation as well as robustness to deformations and gray value variations.
 
 https://pypi.org/project/elasticdeform/
+
+MLFLOW Tutorial:
+
+https://www.youtube.com/watch?v=WbicniUy_u0
+

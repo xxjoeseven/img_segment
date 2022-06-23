@@ -115,6 +115,8 @@ dataset/
 # model/
 models/
 papers/
+weights/
+mlruns/
 
 # Polyaxon
 .polyaxonignore

@@ -9,6 +9,7 @@ from albumentations import HorizontalFlip, VerticalFlip, Rotate
 from tqdm import tqdm
 
 import utility as ut
+from utility.seed import set_seed
 
 def augment_img(images, annotations, save_path, augment=True):
     """
@@ -87,18 +88,30 @@ def augment_img(images, annotations, save_path, augment=True):
 if __name__ == "__main__":
 
     # Set Seed
-    random.seed(77)
-    np.random.seed(77)
+    set_seed(77)
 
-    image_path = r"..\dataset\training\images\\"
-    train_img_path = ut.utils.get_img_list(image_path, 'tif')
+    # Augment Training Data 
+    train_dir = r"..\dataset\training\images\\"
+    train_img_path = ut.utils.get_img_list(train_dir, 'tif')
 
-    annotation_path = r"..\dataset\training\\1st_manual\\"
-    annotated_img_path = ut.utils.get_img_list(annotation_path, "gif")
+    train_mask_dir = r"..\dataset\training\\1st_manual\\"
+    train_mask_path = ut.utils.get_img_list(train_mask_dir, "gif")
 
     ut.utils.make_dir(r"..\dataset\augmented\training\images\\")
     ut.utils.make_dir(r"..\dataset\augmented\training\annotated\\")
 
-    augment_img(train_img_path, annotated_img_path, 
-            r"..\dataset\augmented\training\\", augment=True)    
+    augment_img(train_img_path, train_mask_path, 
+            r"..\dataset\augmented\training\\", augment=True)
 
+    # Augment Validation Data to increase number of images
+    validate_dir = r"..\dataset\validate\images\\" 
+    validate_img_path = ut.utils.get_img_list(validate_dir, 'tif')
+
+    validate_mask_dir = r"..\dataset\validate\\1st_manual\\"
+    validate_mask_path = ut.utils.get_img_list(validate_mask_dir, 'gif')
+
+    ut.utils.make_dir(r"..\dataset\augmented\validate\images\\")
+    ut.utils.make_dir(r"..\dataset\augmented\validate\annotated\\")
+
+    augment_img(validate_img_path, validate_mask_path,
+            r"..\dataset\augmented\validate\\", augment=True)
